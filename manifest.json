@@ -1,0 +1,17 @@
+{
+  "name": "RideOS — Vehicle Dashboard",
+  "short_name": "RideOS",
+  "description": "DIY vehicle dashboard untuk iPhone 7. Offline-first, tanpa backend.",
+  "lang": "id",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#08111F",
+  "theme_color": "#08111F",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
