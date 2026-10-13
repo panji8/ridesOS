@@ -34,6 +34,10 @@ body[data-theme="day"]{
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+/* FIX: pastikan atribut [hidden] benar-benar menyembunyikan elemen */
+[hidden]{display:none !important}
+
 html,body{margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -84,7 +88,7 @@ body[data-theme="day"] .statusbar{background:rgba(234,242,250,.9)}
   padding:12px 12px 24px;
   max-width:720px;margin:0 auto;
 }
-.screen[hidden]{display:none}
+.screen[hidden]{display:none !important}
 .screen__head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .screen__title{margin:0;font-size:18px;font-weight:600;letter-spacing:.3px}
 
@@ -287,28 +291,60 @@ body[data-theme="day"] .modebar{background:rgba(234,242,250,.95)}
 
 /* ============ TOAST ============ */
 .toast{
-  position:fixed;left:50%;transform:translateX(-50%);
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
   bottom:calc(70px + var(--safe-bot));
-  background:var(--panel);border:1px solid var(--border);
-  color:var(--text);padding:10px 16px;border-radius:20px;
-  font-size:13px;box-shadow:var(--glow);z-index:100;
-  max-width:90vw;text-align:center;
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px 16px;
+  border-radius:20px;
+  font-size:13px;
+  box-shadow:var(--glow);
+  z-index:150;
+  max-width:90vw;
+  text-align:center;
+  pointer-events:none;
 }
+.toast[hidden]{display:none !important}
 
 /* ============ MODAL ============ */
 .modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.6);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;z-index:200;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.65);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:200;
 }
+.modal[hidden]{display:none !important}
 .modal__box{
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:var(--radius);padding:18px;max-width:340px;width:100%;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  max-width:340px;
+  width:100%;
+  pointer-events:auto;
+  position:relative;
+  z-index:201;
 }
 .modal__box h3{margin:0 0 8px;font-size:16px}
 .modal__box p{margin:0 0 14px;color:var(--text-2);font-size:13px}
-.modal__actions{display:flex;gap:10px}
-.modal__actions .btn{flex:1}
+.modal__actions{
+  display:flex;
+  gap:10px;
+  position:relative;
+  z-index:202;
+}
+.modal__actions .btn{
+  flex:1;
+  position:relative;
+  z-index:203;
+}
 
 /* =========================================================
    MODE LAYOUTS
