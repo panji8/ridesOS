@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#08111F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RideOS">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<link rel="icon" href="assets/icons/icon-192.png">
+<link rel="stylesheet" href="css/rideos.css">
+<title>RideOS</title>
+</head>
+<body data-mode="auto" data-theme="night" data-screen="home">
+
+<!-- ====== TOP STATUS BAR ====== -->
+<header class="statusbar" role="banner">
+  <div class="statusbar__left">
+    <span class="brand">RideOS</span>
+    <span class="brand__ver" id="appVersion">v0.1</span>
+  </div>
+  <div class="statusbar__right">
+    <span class="chip" id="chipNet" title="Status jaringan">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 22h20v-2H2v2zm0-4h20v-2H2v2zm0-4h20v-2H2v2zm0-4h20V8H2v2z"/></svg>
+      <span id="netLabel">OFFLINE</span>
+    </span>
+    <span class="chip" id="chipGps" title="Status GPS">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm8.94 3A9 9 0 0013 3.06V1h-2v2.06A9 9 0 003.06 11H1v2h2.06A9 9 0 0011 20.94V23h2v-2.06A9 9 0 0020.94 13H23v-2h-2.06z"/></svg>
+      <span id="gpsLabel">STANDBY</span>
+    </span>
+    <span class="chip" id="chipBat" title="Status baterai" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h-2V2h-4v2H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2z"/></svg>
+      <span id="batLabel">--%</span>
+    </span>
+    <span class="chip chip--clock" id="chipClock">--:--</span>
+  </div>
+</header>
+
+<!-- ====== SCREEN: HOME ====== -->
+<main class="screen" id="screen-home" role="main">
+
+  <section class="hero">
+    <div class="hero__clock">
+      <div class="clock" id="clockTime">--:--</div>
+      <div class="clock__date" id="clockDate">Memuat tanggal…</div>
+    </div>
+  </section>
+
+  <section class="speedo" aria-label="Speedometer GPS">
+    <div class="speedo__ring">
+      <svg viewBox="0 0 200 200" class="speedo__svg" aria-hidden="true">
+        <circle cx="100" cy="100" r="88" class="ring-bg"/>
+        <circle cx="100" cy="100" r="88" class="ring-fg" id="speedRing"/>
+      </svg>
+      <div class="speedo__readout">
+        <div class="speedo__value" id="speedValue">0</div>
+        <div class="speedo__unit">km/h</div>
+        <div class="speedo__acc" id="speedAcc">Akurasi: --</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tripgrid" aria-label="Trip computer">
+    <div class="card">
+      <div class="card__label">Jarak</div>
+      <div class="card__value"><span id="tripDist">0.00</span> <span class="card__unit">km</span></div>
+    </div>
+    <div class="card">
+      <div class="card__label">Durasi</div>
+      <div class="card__value" id="tripDur">00:00:00</div>
+    </div>
+    <div class="card">
+      <div class="card__label">Rata-rata</div>
+      <div class="card__value"><span id="tripAvg">0.0</span> <span class="card__unit">km/h</span></div>
+    </div>
+    <div class="card">
+      <div class="card__label">Maks</div>
+      <div class="card__value"><span id="tripMax">0.0</span> <span class="card__unit">km/h</span></div>
+    </div>
+  </section>
+
+  <section class="tripctl" aria-label="Kontrol perjalanan">
+    <button class="btn btn--primary" id="btnTripToggle" type="button">Mulai Trip</button>
+    <button class="btn btn--ghost" id="btnTripReset" type="button">Reset</button>
+  </section>
+
+  <section class="shortcuts" aria-label="Pintasan">
+    <button class="tile" data-nav="navigation" type="button">
+      <span class="tile__ico">🧭</span>
+      <span class="tile__txt">Navigasi</span>
+    </button>
+    <button class="tile" data-nav="media" type="button">
+      <span class="tile__ico">🎵</span>
+      <span class="tile__txt">Media</span>
+    </button>
+    <button class="tile" data-nav="trip" type="button">
+      <span class="tile__ico">📊</span>
+      <span class="tile__txt">Trip</span>
+    </button>
+    <button class="tile" data-nav="settings" type="button">
+      <span class="tile__ico">⚙️</span>
+      <span class="tile__txt">Setelan</span>
+    </button>
+  </section>
+
+  <p class="disclaimer" id="gpsDisclaimer">
+    Catatan: jarak GPS adalah estimasi dan bukan pengganti odometer kendaraan.
+  </p>
+</main>
+
+<!-- ====== SCREEN: NAVIGATION ====== -->
+<main class="screen" id="screen-navigation" role="main" hidden>
+  <header class="screen__head">
+    <button class="btn btn--icon" data-back type="button" aria-label="Kembali">←</button>
+    <h1 class="screen__title">Navigation Center</h1>
+  </header>
+
+  <section class="panel">
+    <h2 class="panel__title">Status GPS</h2>
+    <ul class="kv">
+      <li><span>Status</span><b id="navGpsStatus">STANDBY</b></li>
+      <li><span>Akurasi</span><b id="navGpsAcc">--</b></li>
+      <li><span>Latitude</span><b id="navGpsLat">--</b></li>
+      <li><span>Longitude</span><b id="navGpsLon">--</b></li>
+      <li><span>Kecepatan</span><b id="navGpsSpd">-- km/h</b></li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Navigasi Cepat</h2>
+    <p class="muted">
+      Membuka Google Maps di Safari. Membutuhkan koneksi internet.
+    </p>
+    <div class="row">
+      <button class="btn btn--primary" id="btnOpenGmaps" type="button">Buka Google Maps</button>
+      <button class="btn btn--ghost" id="btnOpenGmapsDir" type="button">Rute ke Tujuan…</button>
+    </div>
+    <label class="field">
+      <span>Alamat / koordinat tujuan</span>
+      <input id="destInput" type="text" inputmode="text" placeholder="contoh: Monas, Jakarta">
+    </label>
+  </section>
+
+  <section class="panel panel--muted">
+    <h2 class="panel__title">Peta Offline (belum tersedia)</h2>
+    <p class="muted">
+      Modul ini adalah kerangka untuk Tahap 2. Saat ini belum ada data peta lokal,
+      jadi tidak ada peta offline yang ditampilkan. Struktur modul disiapkan agar
+      Leaflet + tile lokal dapat ditambahkan tanpa mengubah arsitektur.
+    </p>
+  </section>
+</main>
+
+<!-- ====== SCREEN: MEDIA ====== -->
+<main class="screen" id="screen-media" role="main" hidden>
+  <header class="screen__head">
+    <button class="btn btn--icon" data-back type="button" aria-label="Kembali">←</button>
+    <h1 class="screen__title">Media Center</h1>
+  </header>
+
+  <section class="panel">
+    <h2 class="panel__title">Buka Layanan Musik</h2>
+    <p class="muted">
+      Web app di iOS 15 tidak dapat mengontrol aplikasi musik lain secara langsung.
+      Tombol di bawah hanya membuka aplikasi/web terkait.
+    </p>
+    <div class="grid2">
+      <button class="btn btn--primary" data-media="music" type="button">Apple Music</button>
+      <button class="btn btn--primary" data-media="spotify" type="button">Spotify</button>
+      <button class="btn btn--primary" data-media="youtube" type="button">YouTube Music</button>
+      <button class="btn btn--primary" data-media="radio" type="button">Radio Browser</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Media Session (jika didukung)</h2>
+    <p class="muted">
+      Safari iOS 15 memiliki dukungan Media Session API yang terbatas. Kontrol
+      ini hanya berlaku untuk pemutaran di dalam halaman ini, bukan lintas aplikasi.
+    </p>
+    <div class="row">
+      <button class="btn btn--ghost" id="btnMediaPlay" type="button">Play</button>
+      <button class="btn btn--ghost" id="btnMediaPause" type="button">Pause</button>
+      <button class="btn btn--ghost" id="btnMediaStop" type="button">Stop</button>
+    </div>
+    <audio id="audioEl" preload="none"></audio>
+  </section>
+</main>
+
+<!-- ====== SCREEN: TRIP ====== -->
+<main class="screen" id="screen-trip" role="main" hidden>
+  <header class="screen__head">
+    <button class="btn btn--icon" data-back type="button" aria-label="Kembali">←</button>
+    <h1 class="screen__title">Trip Computer</h1>
+  </header>
+
+  <section class="panel">
+    <h2 class="panel__title">Sesi Aktif</h2>
+    <ul class="kv">
+      <li><span>Status</span><b id="tripStatus">Idle</b></li>
+      <li><span>Jarak</span><b id="tripDist2">0.00 km</b></li>
+      <li><span>Durasi</span><b id="tripDur2">00:00:00</b></li>
+      <li><span>Rata-rata</span><b id="tripAvg2">0.0 km/h</b></li>
+      <li><span>Maks</span><b id="tripMax2">0.0 km/h</b></li>
+      <li><span>Titik GPS</span><b id="tripPts">0</b></li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Riwayat Tersimpan</h2>
+    <div class="row">
+      <button class="btn btn--ghost" id="btnSaveTrip" type="button">Simpan Sesi Ini</button>
+      <button class="btn btn--ghost" id="btnExportJson" type="button">Ekspor JSON</button>
+      <button class="btn btn--ghost" id="btnExportCsv" type="button">Ekspor CSV</button>
+      <button class="btn btn--danger" id="btnClearHistory" type="button">Hapus Riwayat</button>
+    </div>
+    <ul class="history" id="tripHistory"></ul>
+  </section>
+</main>
+
+<!-- ====== SCREEN: SETTINGS ====== -->
+<main class="screen" id="screen-settings" role="main" hidden>
+  <header class="screen__head">
+    <button class="btn btn--icon" data-back type="button" aria-label="Kembali">←</button>
+    <h1 class="screen__title">System Settings</h1>
+  </header>
+
+  <section class="panel">
+    <h2 class="panel__title">Mode Dashboard</h2>
+    <div class="segmented" role="tablist" aria-label="Mode dashboard">
+      <button class="seg" data-mode="auto" type="button" role="tab">AUTO</button>
+      <button class="seg" data-mode="car"  type="button" role="tab">CAR</button>
+      <button class="seg" data-mode="moto" type="button" role="tab">MOTO</button>
+    </div>
+    <p class="muted" id="modeHint">Mode AUTO mengikuti orientasi layar.</p>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Tema</h2>
+    <div class="segmented" role="tablist" aria-label="Tema">
+      <button class="seg" data-theme="night" type="button" role="tab">Malam</button>
+      <button class="seg" data-theme="day"   type="button" role="tab">Siang</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Satuan</h2>
+    <p class="muted">v0.1 hanya mendukung km/h. mph akan ditambahkan di versi berikutnya.</p>
+    <div class="segmented" role="tablist" aria-label="Satuan kecepatan">
+      <button class="seg seg--on" data-unit="kmh" type="button" role="tab">km/h</button>
+      <button class="seg" data-unit="mph" type="button" role="tab" disabled>mph (soon)</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Sistem</h2>
+    <ul class="kv">
+      <li><span>Versi</span><b id="setVersion">v0.1</b></li>
+      <li><span>Penyimpanan lokal</span><b id="setStorage">--</b></li>
+      <li><span>Service Worker</span><b id="setSw">--</b></li>
+      <li><span>Standalone</span><b id="setStandalone">--</b></li>
+    </ul>
+    <div class="row">
+      <button class="btn btn--ghost" id="btnExportAll" type="button">Ekspor Semua Data</button>
+      <button class="btn btn--danger" id="btnResetAll" type="button">Reset Semua Data</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel__title">Pasang ke Home Screen</h2>
+    <ol class="steps">
+      <li>Buka RideOS di <b>Safari</b> iPhone.</li>
+      <li>Ketuk ikon <b>Bagikan</b> (kotak dengan panah ke atas).</li>
+      <li>Pilih <b>Tambahkan ke Layar Utama</b>.</li>
+      <li>Beri nama <b>RideOS</b>, lalu ketuk <b>Tambah</b>.</li>
+      <li>Buka dari ikon Home Screen agar tampil fullscreen.</li>
+    </ol>
+  </section>
+</main>
+
+<!-- ====== BOTTOM MODE BAR ====== -->
+<nav class="modebar" aria-label="Mode dan navigasi cepat">
+  <button class="modebar__btn" data-nav="home" type="button">Home</button>
+  <button class="modebar__btn" data-nav="navigation" type="button">Nav</button>
+  <button class="modebar__btn" data-nav="media" type="button">Media</button>
+  <button class="modebar__btn" data-nav="trip" type="button">Trip</button>
+  <button class="modebar__btn" data-nav="settings" type="button">Set</button>
+</nav>
+
+<!-- ====== TOAST ====== -->
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- ====== MODAL KONFIRMASI ====== -->
+<div id="modal" class="modal" hidden>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Konfirmasi</h3>
+    <p id="modalBody">Yakin?</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" id="modalCancel" type="button">Batal</button>
+      <button class="btn btn--danger" id="modalOk" type="button">Ya, lanjut</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SCRIPTS ====== -->
+<script src="js/storage.js"></script>
+<script src="js/orientation.js"></script>
+<script src="js/gps.js"></script>
+<script src="js/trip.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/media.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
