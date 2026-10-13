@@ -1,0 +1,361 @@
+/* =========================================================
+   RideOS v0.1 — Stylesheet
+   Target: iPhone 7 (750x1334), Safari iOS 15
+   ========================================================= */
+
+:root{
+  --bg:        #08111F;
+  --panel:     #101F32;
+  --panel-2:   #14263d;
+  --cyan:      #71E7FF;
+  --orange:    #FF9A5A;
+  --text:      #FFFFFF;
+  --text-2:    #8FA7C0;
+  --border:    rgba(113,231,255,.18);
+  --glow:      0 0 12px rgba(113,231,255,.35);
+  --radius:    14px;
+  --radius-sm: 10px;
+  --gap:       10px;
+  --safe-top:  env(safe-area-inset-top, 0px);
+  --safe-bot:  env(safe-area-inset-bottom, 0px);
+}
+
+/* Day theme */
+body[data-theme="day"]{
+  --bg:      #EAF2FA;
+  --panel:   #FFFFFF;
+  --panel-2: #F4F8FC;
+  --cyan:    #0F7EA8;
+  --orange:  #C95A20;
+  --text:    #0B1A2A;
+  --text-2:  #4B647C;
+  --border:  rgba(15,126,168,.25);
+  --glow:    0 0 8px rgba(15,126,168,.25);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  font-size:15px;
+  line-height:1.35;
+  min-height:100vh;
+  padding-top:calc(44px + var(--safe-top));
+  padding-bottom:calc(56px + var(--safe-bot));
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============ TOP STATUS BAR ============ */
+.statusbar{
+  position:fixed;top:0;left:0;right:0;
+  height:calc(44px + var(--safe-top));
+  padding:var(--safe-top) 10px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,17,31,.85);
+  backdrop-filter:saturate(140%) blur(8px);
+  -webkit-backdrop-filter:saturate(140%) blur(8px);
+  border-bottom:1px solid var(--border);
+  z-index:50;
+}
+body[data-theme="day"] .statusbar{background:rgba(234,242,250,.9)}
+.statusbar__left{display:flex;align-items:baseline;gap:6px}
+.brand{font-weight:700;letter-spacing:.5px;color:var(--cyan);font-size:14px}
+.brand__ver{font-size:10px;color:var(--text-2)}
+.statusbar__right{display:flex;align-items:center;gap:6px}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 7px;border-radius:20px;
+  background:var(--panel);border:1px solid var(--border);
+  font-size:10px;color:var(--text-2);letter-spacing:.4px;
+}
+.chip svg{width:11px;height:11px;fill:currentColor}
+.chip--clock{color:var(--cyan);font-variant-numeric:tabular-nums;font-size:11px}
+.chip.is-on{color:var(--cyan);border-color:rgba(113,231,255,.5);box-shadow:var(--glow)}
+.chip.is-warn{color:var(--orange);border-color:rgba(255,154,90,.5)}
+.chip.is-off{opacity:.6}
+
+/* ============ SCREENS ============ */
+.screen{
+  display:block;
+  padding:12px 12px 24px;
+  max-width:720px;margin:0 auto;
+}
+.screen[hidden]{display:none}
+.screen__head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.screen__title{margin:0;font-size:18px;font-weight:600;letter-spacing:.3px}
+
+/* ============ HERO / CLOCK ============ */
+.hero{text-align:center;padding:6px 0 10px}
+.clock{
+  font-size:54px;font-weight:200;letter-spacing:1px;
+  font-variant-numeric:tabular-nums;color:var(--text);
+  text-shadow:0 0 18px rgba(113,231,255,.25);
+  line-height:1;
+}
+.clock__date{color:var(--text-2);font-size:12px;margin-top:4px;letter-spacing:.4px}
+
+/* ============ SPEEDO ============ */
+.speedo{display:flex;justify-content:center;margin:8px 0}
+.speedo__ring{
+  position:relative;width:min(72vw,260px);aspect-ratio:1/1;
+}
+.speedo__svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(143,167,192,.18);stroke-width:10}
+.ring-fg{
+  fill:none;stroke:var(--cyan);stroke-width:10;stroke-linecap:round;
+  stroke-dasharray:553;stroke-dashoffset:553;
+  transition:stroke-dashoffset .25s ease-out;
+  filter:drop-shadow(0 0 6px rgba(113,231,255,.6));
+}
+.speedo__readout{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.speedo__value{
+  font-size:56px;font-weight:300;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-1px;
+}
+.speedo__unit{color:var(--text-2);font-size:12px;letter-spacing:2px;margin-top:2px}
+.speedo__acc{color:var(--text-2);font-size:10px;margin-top:6px}
+
+/* ============ TRIP GRID ============ */
+.tripgrid{
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);
+  margin-top:8px;
+}
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 12px;
+}
+.card__label{color:var(--text-2);font-size:11px;letter-spacing:.6px;text-transform:uppercase}
+.card__value{font-size:22px;font-weight:500;margin-top:3px;font-variant-numeric:tabular-nums}
+.card__unit{color:var(--text-2);font-size:12px;font-weight:400}
+
+/* ============ TRIP CONTROLS ============ */
+.tripctl{display:flex;gap:var(--gap);margin-top:12px}
+.tripctl .btn{flex:1}
+
+/* ============ BUTTONS ============ */
+.btn{
+  appearance:none;-webkit-appearance:none;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  padding:12px 14px;
+  border-radius:var(--radius-sm);
+  font-size:15px;font-weight:500;
+  cursor:pointer;
+  transition:transform .05s ease, background .15s ease, border-color .15s ease;
+  min-height:44px;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5}
+.btn--primary{
+  background:linear-gradient(180deg, rgba(113,231,255,.14), rgba(113,231,255,.05));
+  border-color:rgba(113,231,255,.5);
+  color:var(--cyan);
+  box-shadow:var(--glow);
+}
+.btn--ghost{background:transparent}
+.btn--danger{
+  background:linear-gradient(180deg, rgba(255,90,90,.15), rgba(255,90,90,.05));
+  border-color:rgba(255,120,120,.5);
+  color:#FF9A9A;
+}
+.btn--icon{
+  width:44px;height:44px;padding:0;display:inline-flex;
+  align-items:center;justify-content:center;font-size:20px;
+}
+
+/* ============ SHORTCUTS ============ */
+.shortcuts{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);
+  margin-top:14px;
+}
+.tile{
+  appearance:none;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 6px;
+  color:var(--text);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:inherit;
+}
+.tile:active{transform:scale(.96)}
+.tile__ico{font-size:22px;line-height:1}
+.tile__txt{font-size:11px;color:var(--text-2);letter-spacing:.4px}
+
+/* ============ DISCLAIMER ============ */
+.disclaimer{
+  color:var(--text-2);font-size:10.5px;text-align:center;
+  margin:14px 6px 0;line-height:1.5;
+}
+
+/* ============ PANELS (sub screens) ============ */
+.panel{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;
+}
+.panel--muted{background:var(--panel-2)}
+.panel__title{
+  margin:0 0 8px;font-size:13px;font-weight:600;
+  letter-spacing:.6px;text-transform:uppercase;color:var(--cyan);
+}
+.muted{color:var(--text-2);font-size:12px;line-height:1.5;margin:6px 0}
+
+/* ============ KV LIST ============ */
+.kv{list-style:none;padding:0;margin:0}
+.kv li{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.kv li:last-child{border-bottom:none}
+.kv span{color:var(--text-2)}
+.kv b{font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ============ ROWS & GRIDS ============ */
+.row{display:flex;gap:var(--gap);flex-wrap:wrap}
+.row .btn{flex:1;min-width:130px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+
+/* ============ FIELDS ============ */
+.field{display:block;margin-top:10px}
+.field span{display:block;color:var(--text-2);font-size:11px;margin-bottom:4px}
+.field input{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  color:var(--text);padding:12px;font-size:15px;
+  font-family:inherit;-webkit-appearance:none;
+}
+.field input:focus{outline:none;border-color:var(--cyan);box-shadow:var(--glow)}
+
+/* ============ SEGMENTED ============ */
+.segmented{
+  display:flex;background:var(--bg);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:3px;gap:3px;
+}
+.seg{
+  flex:1;appearance:none;-webkit-appearance:none;
+  background:transparent;border:none;color:var(--text-2);
+  padding:10px 6px;border-radius:8px;font-size:13px;font-weight:500;
+  cursor:pointer;font-family:inherit;min-height:40px;
+}
+.seg.seg--on{
+  background:rgba(113,231,255,.15);color:var(--cyan);
+  box-shadow:inset 0 0 0 1px rgba(113,231,255,.4);
+}
+.seg:disabled{opacity:.4}
+
+/* ============ HISTORY ============ */
+.history{list-style:none;padding:0;margin:10px 0 0}
+.history li{
+  padding:8px 0;border-top:1px solid var(--border);
+  font-size:12px;color:var(--text-2);
+  display:flex;justify-content:space-between;gap:8px;
+}
+.history b{color:var(--text);font-weight:500}
+
+/* ============ STEPS ============ */
+.steps{margin:6px 0 0;padding-left:20px;color:var(--text-2);font-size:13px;line-height:1.7}
+.steps b{color:var(--text);font-weight:500}
+
+/* ============ MODE BAR ============ */
+.modebar{
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(56px + var(--safe-bot));
+  padding-bottom:var(--safe-bot);
+  display:flex;
+  background:rgba(8,17,31,.92);
+  backdrop-filter:saturate(140%) blur(8px);
+  -webkit-backdrop-filter:saturate(140%) blur(8px);
+  border-top:1px solid var(--border);
+  z-index:50;
+}
+body[data-theme="day"] .modebar{background:rgba(234,242,250,.95)}
+.modebar__btn{
+  flex:1;background:transparent;border:none;color:var(--text-2);
+  font-size:11px;letter-spacing:.4px;cursor:pointer;
+  font-family:inherit;min-height:56px;
+}
+.modebar__btn.is-on{color:var(--cyan)}
+
+/* ============ TOAST ============ */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(70px + var(--safe-bot));
+  background:var(--panel);border:1px solid var(--border);
+  color:var(--text);padding:10px 16px;border-radius:20px;
+  font-size:13px;box-shadow:var(--glow);z-index:100;
+  max-width:90vw;text-align:center;
+}
+
+/* ============ MODAL ============ */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:200;
+}
+.modal__box{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;max-width:340px;width:100%;
+}
+.modal__box h3{margin:0 0 8px;font-size:16px}
+.modal__box p{margin:0 0 14px;color:var(--text-2);font-size:13px}
+.modal__actions{display:flex;gap:10px}
+.modal__actions .btn{flex:1}
+
+/* =========================================================
+   MODE LAYOUTS
+   ========================================================= */
+
+/* ---------- CAR MODE (landscape) ---------- */
+body[data-mode="car"] .screen{
+  max-width:100%;padding:8px 14px 20px;
+}
+body[data-mode="car"] #screen-home{
+  display:grid;
+  grid-template-columns: 1.1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap:12px;
+  max-width:1000px;
+}
+body[data-mode="car"] .hero{
+  grid-column:1 / -1;text-align:left;padding:0;
+  display:flex;justify-content:space-between;align-items:center;
+}
+body[data-mode="car"] .clock{font-size:42px;text-align:left}
+body[data-mode="car"] .speedo{grid-column:1;grid-row:2 / span 2;margin:0}
+body[data-mode="car"] .speedo__ring{width:min(40vw,240px)}
+body[data-mode="car"] .tripgrid{grid-column:2;grid-row:2}
+body[data-mode="car"] .tripctl{grid-column:2;grid-row:3;margin:0}
+body[data-mode="car"] .shortcuts{grid-column:1 / -1;grid-row:4;margin-top:0}
+body[data-mode="car"] .disclaimer{grid-column:1 / -1;grid-row:5;margin-top:0}
+
+/* ---------- MOTO MODE (portrait, emphasized) ---------- */
+body[data-mode="moto"] .clock{font-size:46px}
+body[data-mode="moto"] .speedo__ring{width:min(80vw,300px)}
+body[data-mode="moto"] .speedo__value{font-size:72px}
+body[data-mode="moto"] .tripgrid{grid-template-columns:1fr 1fr}
+body[data-mode="moto"] .shortcuts{grid-template-columns:1fr 1fr}
+body[data-mode="moto"] .tile{padding:18px 8px}
+body[data-mode="moto"] .tile__ico{font-size:26px}
+body[data-mode="moto"] .tile__txt{font-size:13px}
+body[data-mode="moto"] .btn{min-height:52px;font-size:16px}
+
+/* ---------- Landscape tweaks (auto car via orientation) ---------- */
+@media (orientation: landscape) and (max-height:500px){
+  body{padding-top:calc(38px + var(--safe-top))}
+  .clock{font-size:40px}
+  .speedo__ring{width:min(38vw,220px)}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;animation:none !important}
+}
