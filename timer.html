@@ -5,109 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Timer, Jam Jakarta & Sticky Note</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
 
   body {
     min-height: 100vh;
     background: linear-gradient(135deg, #1e293b, #0f172a);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 30px;
-    padding: 40px 20px;
-    color: #fff;
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;
+    gap: 30px; padding: 40px 20px; color: #fff;
   }
 
-  /* ===== KARTU UTAMA (TIMER + JAM) ===== */
   .main-card {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 24px;
-    padding: 30px 40px;
-    text-align: center;
+    border-radius: 24px; padding: 30px 40px; text-align: center;
     backdrop-filter: blur(10px);
     box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
     transition: background 0.3s;
   }
+  .main-card.pip-mode { background: #0f172a; border-color: #334155; }
 
-  /* Mode PiP: background lebih gelap agar kontras */
-  .main-card.pip-mode {
-    background: #0f172a;
-    border-color: #334155;
-  }
-
-  /* Jam Jakarta */
   .clock-display {
-    font-size: 48px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 2px;
-    color: #38bdf8;
-    text-shadow: 0 0 15px rgba(56,189,248,0.4);
-    line-height: 1.2;
+    font-size: 48px; font-weight: 600; font-variant-numeric: tabular-nums;
+    letter-spacing: 2px; color: #38bdf8;
+    text-shadow: 0 0 15px rgba(56,189,248,0.4); line-height: 1.2;
   }
-
   .clock-label {
-    font-size: 12px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    opacity: 0.5;
-    margin-bottom: 4px;
+    font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+    opacity: 0.5; margin-bottom: 4px;
   }
 
-  /* Timer */
   .timer-display {
-    font-size: 64px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 2px;
-    transition: color 0.4s ease, text-shadow 0.4s ease;
-    text-shadow: 0 0 20px currentColor;
-    line-height: 1.1;
+    font-size: 64px; font-weight: 700; font-variant-numeric: tabular-nums;
+    letter-spacing: 2px; transition: color 0.4s ease, text-shadow 0.4s ease;
+    text-shadow: 0 0 20px currentColor; line-height: 1.1;
   }
-
   .timer-display.hijau   { color: #22c55e; }
   .timer-display.kuning  { color: #eab308; }
   .timer-display.merah   { color: #ef4444; }
 
   .timer-label {
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    opacity: 0.5;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.5;
   }
 
-  /* Tombol-tombol */
-  .btn-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
 
   .btn {
-    padding: 12px 30px;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
+    padding: 12px 30px; font-size: 16px; font-weight: 700; letter-spacing: 1px;
+    border: none; border-radius: 50px; cursor: pointer; color: #fff;
     transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
-    color: #fff;
   }
-
   .btn:hover:not(:disabled) { transform: translateY(-2px); }
   .btn:active:not(:disabled) { transform: translateY(1px); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -116,79 +63,40 @@
     background: linear-gradient(135deg, #22c55e, #16a34a);
     box-shadow: 0 8px 20px rgba(34,197,94,0.4);
   }
-
   .btn-pip {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     box-shadow: 0 8px 20px rgba(59,130,246,0.4);
-    font-size: 14px;
-    padding: 10px 24px;
+    font-size: 14px; padding: 10px 24px;
   }
 
-  /* ===== STICKY NOTE ===== */
-  .note-container {
-    width: 340px;
-  }
-
-  .note-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-
+  .note-container { width: 340px; }
+  .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .note-header h2 { font-size: 20px; font-weight: 600; letter-spacing: 1px; }
-
   .note-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-
   .note-tab {
-    flex: 1;
-    min-width: 40px;
-    padding: 8px 0;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background: rgba(255,255,255,0.1);
-    color: #cbd5e1;
+    flex: 1; min-width: 40px; padding: 8px 0; text-align: center;
+    font-size: 14px; font-weight: 600; border: none; border-radius: 8px;
+    cursor: pointer; background: rgba(255,255,255,0.1); color: #cbd5e1;
     transition: background 0.2s, color 0.2s;
   }
-
   .note-tab.active { background: #facc15; color: #1e293b; }
 
   .sticky-note {
-    background: #fef9c3;
-    color: #422006;
-    border-radius: 12px;
-    padding: 20px;
-    min-height: 320px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+    background: #fef9c3; color: #422006; border-radius: 12px; padding: 20px;
+    min-height: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.35);
     background-image: repeating-linear-gradient(
-      transparent,
-      transparent 27px,
-      rgba(0,0,0,0.07) 27px,
-      rgba(0,0,0,0.07) 28px
+      transparent, transparent 27px,
+      rgba(0,0,0,0.07) 27px, rgba(0,0,0,0.07) 28px
     );
     background-position: 0 20px;
   }
-
   .sticky-note textarea {
-    width: 100%;
-    min-height: 280px;
-    background: transparent;
-    border: none;
-    outline: none;
-    resize: none;
-    font-size: 16px;
-    line-height: 28px;
-    color: #422006;
-    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+    width: 100%; min-height: 280px; background: transparent; border: none;
+    outline: none; resize: none; font-size: 16px; line-height: 28px;
+    color: #422006; font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
   }
-
   .note-status { margin-top: 8px; font-size: 12px; opacity: 0.5; text-align: right; transition: opacity 0.3s; }
 
-  /* ===== RESPONSIVE ===== */
   @media (max-width: 760px) {
     .clock-display { font-size: 36px; }
     .timer-display { font-size: 52px; }
@@ -199,28 +107,21 @@
 </head>
 <body>
 
-  <!-- ===== KARTU UTAMA: JAM + TIMER ===== -->
   <div class="main-card" id="mainCard">
-    <!-- Jam Jakarta -->
     <div class="clock-label">Waktu Jakarta (WIB)</div>
     <div class="clock-display" id="clockDisplay">--:--:--</div>
 
-    <!-- Timer -->
     <div class="timer-label" style="margin-top: 12px;">Timer</div>
     <div class="timer-display hijau" id="timerDisplay">00:00</div>
 
-    <!-- Tombol -->
     <div class="btn-row">
       <button class="btn btn-start" id="startBtn" onclick="startTimer()">MULAI</button>
       <button class="btn btn-pip" id="pipBtn" onclick="togglePiP()">📺 PiP</button>
     </div>
   </div>
 
-  <!-- ===== STICKY NOTE ===== -->
   <div class="note-container">
-    <div class="note-header">
-      <h2>📝 Sticky Note</h2>
-    </div>
+    <div class="note-header"><h2>📝 Sticky Note</h2></div>
     <div class="note-tabs" id="tabs"></div>
     <div class="sticky-note">
       <textarea id="noteArea" placeholder="Tulis catatan di sini..."></textarea>
@@ -230,33 +131,39 @@
 
 <script>
   /* =========================================================
+     REFERENSI ELEMEN (disimpan di variabel global)
+     PENTING: referensi ini tetap valid walau elemen dipindah
+     ke dokumen lain (jendela PiP).
+     ========================================================= */
+  const clockDisplay = document.getElementById('clockDisplay');
+  const timerDisplay = document.getElementById('timerDisplay');
+  const mainCard     = document.getElementById('mainCard');
+  const startBtn     = document.getElementById('startBtn');
+  const pipBtn       = document.getElementById('pipBtn');
+
+  /* =========================================================
      JAM JAKARTA (WIB)
+     Menggunakan referensi elemen yang tersimpan, sehingga
+     tetap update walau elemen sudah pindah ke PiP.
      ========================================================= */
   function updateClock() {
     const now = new Date();
-    // Format jam:menit:detik dengan timezone Asia/Jakarta
     const timeStr = now.toLocaleTimeString('id-ID', {
       timeZone: 'Asia/Jakarta',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
       hour12: false
     });
-    document.getElementById('clockDisplay').textContent = timeStr;
+    clockDisplay.textContent = timeStr;
   }
-  // Update jam setiap detik
   setInterval(updateClock, 1000);
-  updateClock(); // panggil langsung saat load
+  updateClock();
 
   /* =========================================================
      TIMER
      ========================================================= */
   let seconds = 0;
-  let interval = null;
   let running = false;
-
-  const timerDisplay = document.getElementById('timerDisplay');
-  const startBtn = document.getElementById('startBtn');
+  let interval = null;
 
   function formatTime(total) {
     const m = Math.floor(total / 60).toString().padStart(2, '0');
@@ -264,10 +171,6 @@
     return `${m}:${s}`;
   }
 
-  // Aturan warna:
-  // 0 - 60 detik   -> hijau
-  // 61 - 110 detik -> kuning (menit 1:01 s/d 1:50)
-  // >= 111 detik   -> merah (mulai menit 1:51 ke atas)
   function getColorClass(total) {
     if (total <= 60) return 'hijau';
     if (total <= 110) return 'kuning';
@@ -299,7 +202,7 @@
      ========================================================= */
   const STORAGE_KEY = 'sticky_notes_timerApp';
   const noteArea = document.getElementById('noteArea');
-  const tabsEl = document.getElementById('tabs');
+  const tabsEl   = document.getElementById('tabs');
   const statusEl = document.getElementById('noteStatus');
 
   let notes = [];
@@ -309,9 +212,7 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       notes = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      notes = [];
-    }
+    } catch (e) { notes = []; }
     if (!Array.isArray(notes) || notes.length === 0) notes = [''];
     activeIndex = 0;
   }
@@ -336,7 +237,6 @@
       btn.onclick = () => switchNote(i);
       tabsEl.appendChild(btn);
     });
-    // Tombol tambah catatan
     const addBtn = document.createElement('button');
     addBtn.className = 'note-tab';
     addBtn.textContent = '+';
@@ -345,22 +245,14 @@
     tabsEl.appendChild(addBtn);
   }
 
-  function renderNote() {
-    noteArea.value = notes[activeIndex] || '';
-  }
+  function renderNote() { noteArea.value = notes[activeIndex] || ''; }
 
-  function switchNote(i) {
-    activeIndex = i;
-    renderTabs();
-    renderNote();
-  }
+  function switchNote(i) { activeIndex = i; renderTabs(); renderNote(); }
 
   function addNote() {
     notes.push('');
     activeIndex = notes.length - 1;
-    saveNotes();
-    renderTabs();
-    renderNote();
+    saveNotes(); renderTabs(); renderNote();
     noteArea.focus();
   }
 
@@ -369,40 +261,31 @@
     saveNotes();
   });
 
-  // Inisialisasi sticky note
   loadNotes();
   renderTabs();
   renderNote();
 
   /* =========================================================
-     PICTURE-IN-PICTURE (Timer + Jam Jakarta)
+     PICTURE-IN-PICTURE
      ========================================================= */
   let pipWindow = null;
-  const mainCard = document.getElementById('mainCard');
-  const pipBtn = document.getElementById('pipBtn');
 
   async function togglePiP() {
-    // Jika PiP sudah terbuka, tutup
-    if (pipWindow) {
-      pipWindow.close();
-      return;
-    }
+    if (pipWindow) { pipWindow.close(); return; }
 
-    // Cek dukungan browser
     if (!('documentPictureInPicture' in window)) {
       alert('Browser Anda belum mendukung Document Picture-in-Picture. Gunakan Chrome atau Edge versi terbaru.');
       return;
     }
 
     try {
-      // 1. Buka jendela PiP baru
       pipWindow = await documentPictureInPicture.requestWindow({
         width: 360,
         height: 220,
         disallowReturnToOpener: false
       });
 
-      // 2. Salin stylesheet dari halaman utama ke jendela PiP
+      // Salin stylesheet
       [...document.styleSheets].forEach((styleSheet) => {
         try {
           const cssRules = [...styleSheet.cssRules].map(rule => rule.cssText).join('');
@@ -410,7 +293,6 @@
           style.textContent = cssRules;
           pipWindow.document.head.appendChild(style);
         } catch (e) {
-          // Jika CORS, gunakan link
           const link = document.createElement('link');
           link.rel = 'stylesheet';
           link.href = styleSheet.href;
@@ -418,30 +300,35 @@
         }
       });
 
-      // 3. Atur body jendela PiP
-      pipWindow.document.body.style.margin = '0';
-      pipWindow.document.body.style.background = '#0f172a';
-      pipWindow.document.body.style.display = 'flex';
-      pipWindow.document.body.style.justifyContent = 'center';
-      pipWindow.document.body.style.alignItems = 'center';
-      pipWindow.document.body.style.height = '100vh';
-      pipWindow.document.body.style.padding = '10px';
-      pipWindow.document.body.style.boxSizing = 'border-box';
+      // Styling body PiP
+      Object.assign(pipWindow.document.body.style, {
+        margin: '0',
+        background: '#0f172a',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        padding: '10px',
+        boxSizing: 'border-box'
+      });
 
-      // 4. Pindahkan kartu utama (jam + timer + tombol) ke PiP
+      // Pindahkan kartu utama (berisi jam + timer + tombol) ke PiP
       mainCard.classList.add('pip-mode');
       pipWindow.document.body.appendChild(mainCard);
 
-      // 5. Ubah teks tombol PiP
       pipBtn.textContent = '✖ Tutup PiP';
 
-      // 6. Handle saat PiP ditutup (oleh user atau program)
+      // Saat PiP ditutup, kembalikan ke halaman utama
       pipWindow.addEventListener('pagehide', () => {
-        // Kembalikan kartu ke body utama
         document.body.prepend(mainCard);
         mainCard.classList.remove('pip-mode');
         pipBtn.textContent = '📺 PiP';
         pipWindow = null;
+
+        // PASTIKAN jam & timer langsung update saat kembali,
+        // supaya tidak menampilkan nilai lama (stale) sesaat
+        updateClock();
+        updateTimerDisplay();
       });
 
     } catch (error) {
